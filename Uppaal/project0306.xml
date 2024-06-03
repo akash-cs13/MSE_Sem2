@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan start, capture_image, capture_plants, stop;
+chan diseased, healthy, weed;
+chan obstacle_detected, obstacle_avoided;</declaration>
+	<template>
+		<name x="5" y="5">JetsonCarMovement</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="-263" y="-153">
+			<name x="-273" y="-187">Idle</name>
+		</location>
+		<location id="id1" x="-59" y="-144">
+			<name x="-69" y="-178">MoveForward</name>
+		</location>
+		<location id="id2" x="127" y="-59">
+			<name x="117" y="-93">ImageCaptured</name>
+		</location>
+		<location id="id3" x="110" y="127">
+			<name x="136" y="119">LeftMovement</name>
+		</location>
+		<location id="id4" x="25" y="59">
+			<name x="-102" y="50">RightMovement</name>
+		</location>
+		<location id="id5" x="-127" y="204">
+			<name x="-187" y="221">AvoidObstacle</name>
+		</location>
+		<location id="id6" x="-459" y="110">
+			<name x="-655" y="101">PlantsIdentification</name>
+		</location>
+		<location id="id7" x="-450" y="-102">
+			<name x="-569" y="-119">ActionTaken</name>
+		</location>
+		<location id="id8" x="-340" y="195">
+			<name x="-391" y="203">LaneFollow</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id9">
+			<source ref="id8"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-629" y="-8">stop?</label>
+			<nail x="-476" y="170"/>
+			<nail x="-586" y="0"/>
+			<nail x="-518" y="-127"/>
+			<nail x="-382" y="-178"/>
+		</transition>
+		<transition id="id10">
+			<source ref="id1"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-297" y="-34">capture_plants!</label>
+		</transition>
+		<transition id="id11">
+			<source ref="id5"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-297" y="178">obstacle_avoided?</label>
+		</transition>
+		<transition id="id12">
+			<source ref="id7"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-399" y="-144">stop?</label>
+		</transition>
+		<transition id="id13">
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-408" y="-34">weed!</label>
+			<nail x="-391" y="8"/>
+		</transition>
+		<transition id="id14">
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-535" y="-8">diseased!</label>
+			<nail x="-510" y="8"/>
+		</transition>
+		<transition id="id15">
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-476" y="34">healthy!</label>
+		</transition>
+		<transition id="id16">
+			<source ref="id3"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="34" y="178">obstacle_detected?</label>
+		</transition>
+		<transition id="id17">
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-109" y="119">obstacle_detected?</label>
+		</transition>
+		<transition id="id18">
+			<source ref="id2"/>
+			<target ref="id4"/>
+		</transition>
+		<transition id="id19">
+			<source ref="id2"/>
+			<target ref="id3"/>
+		</transition>
+		<transition id="id20">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-8" y="-136">capture_image!</label>
+		</transition>
+		<transition id="id21">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-187" y="-170">start!</label>
+		</transition>
+	</template>
+	<template>
+		<name>Training</name>
+		<location id="id22" x="-246" y="-161">
+			<name x="-306" y="-195">Initializing</name>
+		</location>
+		<location id="id23" x="-68" y="-170">
+			<name x="-119" y="-204">x_y_collected</name>
+		</location>
+		<location id="id24" x="102" y="-119">
+			<name x="119" y="-127">TrainModel</name>
+		</location>
+		<location id="id25" x="34" y="0">
+			<name x="51" y="-8">ValidateModel</name>
+		</location>
+		<location id="id26" x="-144" y="8">
+			<name x="-195" y="25">EvaluateModel</name>
+		</location>
+		<location id="id27" x="-297" y="-59">
+			<name x="-425" y="-42">TrainingComplete</name>
+		</location>
+		<init ref="id22"/>
+		<transition id="id28">
+			<source ref="id27"/>
+			<target ref="id22"/>
+			<label kind="synchronisation" x="-314" y="-127">stop!</label>
+		</transition>
+		<transition id="id29">
+			<source ref="id22"/>
+			<target ref="id22"/>
+			<nail x="-314" y="-161"/>
+		</transition>
+		<transition id="id30">
+			<source ref="id26"/>
+			<target ref="id27"/>
+		</transition>
+		<transition id="id31">
+			<source ref="id25"/>
+			<target ref="id26"/>
+		</transition>
+		<transition id="id32">
+			<source ref="id24"/>
+			<target ref="id25"/>
+		</transition>
+		<transition id="id33">
+			<source ref="id23"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="-17" y="-170">capture_image?</label>
+		</transition>
+		<transition id="id34">
+			<source ref="id22"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="-187" y="-161">start?</label>
+		</transition>
+	</template>
+	<template>
+		<name>BeetPlantDetectionAndWeedRemoval</name>
+		<location id="id35" x="-450" y="-76">
+			<name x="-578" y="-85">Initializing</name>
+		</location>
+		<location id="id36" x="-263" y="-178">
+			<name x="-323" y="-212">ImageProcessed</name>
+		</location>
+		<location id="id37" x="-34" y="-68">
+			<name x="-44" y="-102">PlantsDetected</name>
+		</location>
+		<location id="id38" x="25" y="153">
+			<name x="42" y="144">SprayPesticides</name>
+		</location>
+		<location id="id39" x="-221" y="42">
+			<name x="-246" y="0">Remove</name>
+		</location>
+		<location id="id40" x="-144" y="144">
+			<name x="-178" y="161">ApplyFertilizer</name>
+		</location>
+		<location id="id41" x="-408" y="136">
+			<name x="-527" y="144">ContinueMovement</name>
+		</location>
+		<init ref="id35"/>
+		<transition id="id42">
+			<source ref="id41"/>
+			<target ref="id35"/>
+			<label kind="synchronisation" x="-429" y="13">stop!</label>
+		</transition>
+		<transition id="id43">
+			<source ref="id38"/>
+			<target ref="id41"/>
+			<nail x="-59" y="204"/>
+			<nail x="-255" y="204"/>
+		</transition>
+		<transition id="id44">
+			<source ref="id40"/>
+			<target ref="id41"/>
+		</transition>
+		<transition id="id45">
+			<source ref="id39"/>
+			<target ref="id41"/>
+		</transition>
+		<transition id="id46">
+			<source ref="id35"/>
+			<target ref="id35"/>
+			<label kind="synchronisation" x="-454" y="-118">start?</label>
+			<nail x="-459" y="-127"/>
+		</transition>
+		<transition id="id47">
+			<source ref="id37"/>
+			<target ref="id40"/>
+			<label kind="synchronisation" x="-102" y="68">healthy?</label>
+		</transition>
+		<transition id="id48">
+			<source ref="id37"/>
+			<target ref="id39"/>
+			<label kind="synchronisation" x="-170" y="-34">weed?</label>
+		</transition>
+		<transition id="id49">
+			<source ref="id37"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-4" y="25">diseased?</label>
+		</transition>
+		<transition id="id50">
+			<source ref="id36"/>
+			<target ref="id37"/>
+		</transition>
+		<transition id="id51">
+			<source ref="id35"/>
+			<target ref="id36"/>
+			<label kind="synchronisation" x="-374" y="-136">capture_plants?</label>
+		</transition>
+	</template>
+	<template>
+		<name>ObstacleDetection</name>
+		<location id="id52" x="-450" y="-93">
+			<name x="-552" y="-102">NoObstacle</name>
+		</location>
+		<location id="id53" x="-229" y="-93">
+			<name x="-212" y="-102">DirectedMovement</name>
+		</location>
+		<init ref="id52"/>
+		<transition id="id54">
+			<source ref="id53"/>
+			<target ref="id52"/>
+			<label kind="synchronisation" x="-417" y="-26">obstacle_avoided!</label>
+			<nail x="-272" y="-34"/>
+			<nail x="-408" y="-34"/>
+		</transition>
+		<transition id="id55">
+			<source ref="id52"/>
+			<target ref="id53"/>
+			<label kind="synchronisation" x="-425" y="-119">obstacle_detected!</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+JetsonCar = JetsonCarMovement(); 
+ModelTraining = Training(); 
+PlantDetectionAndRemoval = BeetPlantDetectionAndWeedRemoval();
+DetectObstacle = ObstacleDetection();
+// List one or more processes to be composed into a system.
+system JetsonCar, ModelTraining, PlantDetectionAndRemoval, DetectObstacle;
+</system>
+	<queries>
+		<query>
+			<formula/>
+			<comment/>
+		</query>
+	</queries>
+</nta>
