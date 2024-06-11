@@ -1,0 +1,322 @@
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan start, capture_image, capture_plants, stop;
+chan diseased, healthy, weed;
+chan obstacle_detected, obstacle_avoided;</declaration>
+	<template>
+		<name>PathFollowing</name>
+		<location id="id0" x="-527" y="-68">
+			<name x="-586" y="-76">Idle</name>
+		</location>
+		<location id="id1" x="-340" y="-238">
+			<name x="-391" y="-272">MoveForward</name>
+		</location>
+		<location id="id2" x="-17" y="-238">
+			<name x="-68" y="-272">ImageCaptured</name>
+		</location>
+		<location id="id3" x="-170" y="-68">
+			<name x="-153" y="-76">RightMovement</name>
+		</location>
+		<location id="id4" x="0" y="110">
+			<name x="-42" y="127">AvoidObstacle</name>
+		</location>
+		<location id="id5" x="-331" y="110">
+			<name x="-365" y="127">LaneFollow</name>
+		</location>
+		<location id="id6" x="161" y="-68">
+			<name x="187" y="-76">LeftMovement</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id7">
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-229" y="119">obstacle_avoided?</label>
+		</transition>
+		<transition id="id8">
+			<source ref="id6"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="76" y="17">obstacle_detected?</label>
+		</transition>
+		<transition id="id9">
+			<source ref="id2"/>
+			<target ref="id6"/>
+		</transition>
+		<transition id="id10">
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-509" y="4">stop?</label>
+		</transition>
+		<transition id="id11">
+			<source ref="id3"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-238" y="0">obstacle_detected?</label>
+		</transition>
+		<transition id="id12">
+			<source ref="id2"/>
+			<target ref="id3"/>
+		</transition>
+		<transition id="id13">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-263" y="-263">capture_image!</label>
+		</transition>
+		<transition id="id14">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-509" y="-170">start!</label>
+		</transition>
+	</template>
+	<template>
+		<name>WeedRemoval</name>
+		<location id="id15" x="-187" y="0">
+			<name x="-314" y="-17">Initializing</name>
+		</location>
+		<location id="id16" x="-17" y="-119">
+			<name x="-27" y="-153">ImageProcessed</name>
+		</location>
+		<location id="id17" x="153" y="0">
+			<name x="143" y="-34">WeedDetected</name>
+		</location>
+		<location id="id18" x="76" y="178">
+			<name x="85" y="204">RemoveWeed</name>
+		</location>
+		<location id="id19" x="-127" y="178">
+			<name x="-212" y="195">ContinueMovement</name>
+		</location>
+		<init ref="id15"/>
+		<transition id="id20">
+			<source ref="id15"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-263" y="-51">start?</label>
+			<nail x="-221" y="-76"/>
+		</transition>
+		<transition id="id21">
+			<source ref="id19"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-212" y="85">stop!</label>
+		</transition>
+		<transition id="id22">
+			<source ref="id18"/>
+			<target ref="id19"/>
+		</transition>
+		<transition id="id23">
+			<source ref="id17"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="119" y="85">weed?</label>
+		</transition>
+		<transition id="id24">
+			<source ref="id16"/>
+			<target ref="id17"/>
+		</transition>
+		<transition id="id25">
+			<source ref="id15"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-136" y="-85">capture_plants?</label>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">ObserverJetsonCar</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id26" x="-221" y="-170">
+			<name x="-231" y="-204">Idle</name>
+		</location>
+		<location id="id27" x="-221" y="127">
+			<name x="-255" y="144">MoveForward</name>
+		</location>
+		<location id="id28" x="-544" y="127">
+			<name x="-629" y="144">PlantsIdentification</name>
+		</location>
+		<location id="id29" x="-536" y="-170">
+			<name x="-587" y="-204">ActionTaken</name>
+		</location>
+		<init ref="id26"/>
+		<transition id="id30">
+			<source ref="id27"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="-442" y="101">capture_plants!</label>
+		</transition>
+		<transition id="id31">
+			<source ref="id29"/>
+			<target ref="id26"/>
+			<label kind="synchronisation" x="-400" y="-196">stop?</label>
+		</transition>
+		<transition id="id32">
+			<source ref="id28"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-476" y="-102">weed!</label>
+			<nail x="-442" y="-25"/>
+		</transition>
+		<transition id="id33">
+			<source ref="id28"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-671" y="-51">diseased!</label>
+			<nail x="-620" y="-34"/>
+		</transition>
+		<transition id="id34">
+			<source ref="id28"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-570" y="-1">healthy!</label>
+		</transition>
+		<transition id="id35">
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="-213" y="-34">start!</label>
+		</transition>
+	</template>
+	<template>
+		<name>Training</name>
+		<location id="id36" x="-246" y="-161">
+			<name x="-306" y="-195">Initializing</name>
+		</location>
+		<location id="id37" x="-68" y="-170">
+			<name x="-119" y="-204">x_y_collected</name>
+		</location>
+		<location id="id38" x="102" y="-119">
+			<name x="119" y="-127">TrainModel</name>
+		</location>
+		<location id="id39" x="34" y="0">
+			<name x="51" y="-8">ValidateModel</name>
+		</location>
+		<location id="id40" x="-144" y="8">
+			<name x="-195" y="25">EvaluateModel</name>
+		</location>
+		<location id="id41" x="-297" y="-59">
+			<name x="-425" y="-42">TrainingComplete</name>
+		</location>
+		<init ref="id36"/>
+		<transition id="id42">
+			<source ref="id41"/>
+			<target ref="id36"/>
+			<label kind="synchronisation" x="-314" y="-127">stop!</label>
+		</transition>
+		<transition id="id43">
+			<source ref="id36"/>
+			<target ref="id36"/>
+			<nail x="-314" y="-161"/>
+		</transition>
+		<transition id="id44">
+			<source ref="id40"/>
+			<target ref="id41"/>
+		</transition>
+		<transition id="id45">
+			<source ref="id39"/>
+			<target ref="id40"/>
+		</transition>
+		<transition id="id46">
+			<source ref="id38"/>
+			<target ref="id39"/>
+		</transition>
+		<transition id="id47">
+			<source ref="id37"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-17" y="-170">capture_image?</label>
+		</transition>
+		<transition id="id48">
+			<source ref="id36"/>
+			<target ref="id37"/>
+			<label kind="synchronisation" x="-187" y="-161">start?</label>
+		</transition>
+	</template>
+	<template>
+		<name>BeetPlantProtection</name>
+		<location id="id49" x="-450" y="-76">
+			<name x="-578" y="-85">Initializing</name>
+		</location>
+		<location id="id50" x="-263" y="-178">
+			<name x="-323" y="-212">ImageProcessed</name>
+		</location>
+		<location id="id51" x="-59" y="-51">
+			<name x="-69" y="-85">PlantsDetected</name>
+		</location>
+		<location id="id52" x="-136" y="178">
+			<name x="-119" y="169">SprayPesticides</name>
+		</location>
+		<location id="id53" x="-229" y="42">
+			<name x="-263" y="59">ApplyFertilizer</name>
+		</location>
+		<location id="id54" x="-408" y="136">
+			<name x="-527" y="144">ContinueMovement</name>
+		</location>
+		<init ref="id49"/>
+		<transition id="id55">
+			<source ref="id52"/>
+			<target ref="id54"/>
+		</transition>
+		<transition id="id56">
+			<source ref="id54"/>
+			<target ref="id49"/>
+			<label kind="synchronisation" x="-429" y="13">stop!</label>
+		</transition>
+		<transition id="id57">
+			<source ref="id53"/>
+			<target ref="id54"/>
+		</transition>
+		<transition id="id58">
+			<source ref="id49"/>
+			<target ref="id49"/>
+			<label kind="synchronisation" x="-454" y="-118">start?</label>
+			<nail x="-459" y="-127"/>
+		</transition>
+		<transition id="id59">
+			<source ref="id51"/>
+			<target ref="id53"/>
+			<label kind="synchronisation" x="-195" y="-34">healthy?</label>
+		</transition>
+		<transition id="id60">
+			<source ref="id51"/>
+			<target ref="id52"/>
+			<label kind="synchronisation" x="-85" y="76">diseased?</label>
+		</transition>
+		<transition id="id61">
+			<source ref="id50"/>
+			<target ref="id51"/>
+		</transition>
+		<transition id="id62">
+			<source ref="id49"/>
+			<target ref="id50"/>
+			<label kind="synchronisation" x="-374" y="-136">capture_plants?</label>
+		</transition>
+	</template>
+	<template>
+		<name>ObstacleDetection</name>
+		<location id="id63" x="-450" y="-93">
+			<name x="-552" y="-102">NoObstacle</name>
+		</location>
+		<location id="id64" x="-229" y="-93">
+			<name x="-212" y="-102">DirectedMovement</name>
+		</location>
+		<init ref="id63"/>
+		<transition id="id65">
+			<source ref="id64"/>
+			<target ref="id63"/>
+			<label kind="synchronisation" x="-417" y="-26">obstacle_avoided!</label>
+			<nail x="-272" y="-34"/>
+			<nail x="-408" y="-34"/>
+		</transition>
+		<transition id="id66">
+			<source ref="id63"/>
+			<target ref="id64"/>
+			<label kind="synchronisation" x="-425" y="-119">obstacle_detected!</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+FollowPath = PathFollowing();
+JetsonCar = ObserverJetsonCar(); 
+RemoveWeed = WeedRemoval();
+ModelTraining = Training(); 
+PlantProtection = BeetPlantProtection();
+DetectObstacle = ObstacleDetection();
+// List one or more processes to be composed into a system.
+system FollowPath, JetsonCar, RemoveWeed, ModelTraining, PlantProtection, DetectObstacle;
+</system>
+	<queries>
+		<query>
+			<formula/>
+			<comment/>
+		</query>
+	</queries>
+</nta>
