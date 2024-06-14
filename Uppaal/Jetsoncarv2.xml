@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan start, capture_image, stop, Done;
+chan diseased, healthy, weed;
+chan obstacle_detected, obstacle_avoided, Wrong_path, Cleared, Coordinates;
+
+clock t, u, w;</declaration>
+	<template>
+		<name>PathFollower</name>
+		<location id="id0" x="-527" y="-68">
+			<name x="-586" y="-76">Idle</name>
+		</location>
+		<location id="id1" x="-340" y="-238">
+			<name x="-391" y="-272">MoveForward</name>
+		</location>
+		<location id="id2" x="-17" y="-238">
+			<name x="-68" y="-272">ImageCaptured</name>
+		</location>
+		<location id="id3" x="-204" y="-102">
+			<name x="-306" y="-119">WrongPath</name>
+		</location>
+		<location id="id4" x="-204" y="25">
+			<name x="-238" y="42">FollowingProperPath</name>
+		</location>
+		<location id="id5" x="8" y="-85">
+			<name x="34" y="-93">ObstacleDetected</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id6">
+			<source ref="id4"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-509" y="-38">Done?</label>
+		</transition>
+		<transition id="id7">
+			<source ref="id2"/>
+			<target ref="id4"/>
+		</transition>
+		<transition id="id8">
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-93" y="-34">Cleared?</label>
+		</transition>
+		<transition id="id9">
+			<source ref="id2"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="0" y="-161">obstacle_detected!</label>
+		</transition>
+		<transition id="id10">
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-280" y="-68">Cleared?</label>
+		</transition>
+		<transition id="id11">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-204" y="-195">Wrong_path!</label>
+		</transition>
+		<transition id="id12">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-263" y="-263">capture_image!</label>
+		</transition>
+		<transition id="id13">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-484" y="-178">start!</label>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">PlantObserver</name>
+		<declaration>// Place local declarations here.
+clock t;</declaration>
+		<location id="id14" x="-221" y="-442">
+			<name x="-231" y="-476">Idle</name>
+		</location>
+		<location id="id15" x="-221" y="-170">
+			<name x="-255" y="-153">CaptureImage</name>
+		</location>
+		<location id="id16" x="-535" y="-170">
+			<name x="-620" y="-153">PlantsIdentification</name>
+		</location>
+		<location id="id17" x="-535" y="-340">
+			<name x="-518" y="-349">Communication</name>
+		</location>
+		<location id="id18" x="-535" y="-442">
+			<name x="-646" y="-459">ActionTaken</name>
+		</location>
+		<location id="id19" x="-382" y="-518">
+			<name x="-392" y="-552">Inform</name>
+		</location>
+		<init ref="id14"/>
+		<transition id="id20">
+			<source ref="id19"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-364" y="-497">Done!</label>
+		</transition>
+		<transition id="id21">
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="-493" y="-501">stop?</label>
+		</transition>
+		<transition id="id22">
+			<source ref="id17"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="-527" y="-399">Coordinates!</label>
+		</transition>
+		<transition id="id23">
+			<source ref="id15"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-442" y="-195">capture_image?</label>
+		</transition>
+		<transition id="id24">
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-476" y="-289">weed!</label>
+			<nail x="-450" y="-229"/>
+		</transition>
+		<transition id="id25">
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-663" y="-289">diseased!</label>
+			<nail x="-612" y="-230"/>
+		</transition>
+		<transition id="id26">
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="-535" y="-238">healthy!</label>
+		</transition>
+		<transition id="id27">
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-212" y="-357">start?</label>
+		</transition>
+	</template>
+	<template>
+		<name>Weeder</name>
+		<location id="id28" x="-187" y="0">
+			<name x="-246" y="-8">Idle</name>
+		</location>
+		<location id="id29" x="-17" y="-119">
+			<name x="-25" y="-153">Activation</name>
+		</location>
+		<location id="id30" x="153" y="0">
+			<name x="143" y="-34">MovementTowardsWeed</name>
+			<label kind="invariant" x="170" y="-8">u&gt;=2</label>
+		</location>
+		<location id="id31" x="76" y="178">
+			<name x="25" y="195">WeedRemoval</name>
+			<label kind="invariant" x="102" y="161">u&gt;=6</label>
+		</location>
+		<location id="id32" x="-119" y="178">
+			<name x="-162" y="195">WeedRemoved</name>
+		</location>
+		<init ref="id28"/>
+		<transition id="id33">
+			<source ref="id32"/>
+			<target ref="id28"/>
+			<label kind="guard" x="-204" y="76">u&gt;=7</label>
+			<label kind="synchronisation" x="-157" y="72">stop!</label>
+		</transition>
+		<transition id="id34">
+			<source ref="id31"/>
+			<target ref="id32"/>
+			<label kind="guard" x="-51" y="153">u&gt;=6</label>
+		</transition>
+		<transition id="id35">
+			<source ref="id30"/>
+			<target ref="id31"/>
+			<label kind="guard" x="85" y="51">u&gt;=2</label>
+		</transition>
+		<transition id="id36">
+			<source ref="id29"/>
+			<target ref="id30"/>
+			<label kind="guard" x="17" y="-68">u&gt;=0</label>
+			<label kind="synchronisation" x="59" y="-85">Coordinates?</label>
+		</transition>
+		<transition id="id37">
+			<source ref="id28"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-144" y="-76">weed?</label>
+			<label kind="assignment" x="-119" y="-51">u:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>SprayingFertilizer</name>
+		<location id="id38" x="153" y="136">
+			<name x="85" y="119">Idle</name>
+		</location>
+		<location id="id39" x="309" y="22">
+			<name x="299" y="-12">Activation</name>
+		</location>
+		<location id="id40" x="479" y="141">
+			<name x="469" y="107">MovementTowardsPlant</name>
+			<label kind="invariant" x="501" y="136">u&gt;=2</label>
+		</location>
+		<location id="id41" x="416" y="323">
+			<name x="388" y="335">Spraying</name>
+			<label kind="invariant" x="439" y="310">u&gt;=6</label>
+		</location>
+		<location id="id42" x="212" y="323">
+			<name x="127" y="340">SprayingDone</name>
+		</location>
+		<init ref="id38"/>
+		<transition id="id43">
+			<source ref="id38"/>
+			<target ref="id39"/>
+			<label kind="synchronisation" x="161" y="59">healthy?</label>
+			<label kind="assignment" x="204" y="93">u:=0</label>
+		</transition>
+		<transition id="id44">
+			<source ref="id42"/>
+			<target ref="id38"/>
+			<label kind="guard" x="136" y="212">u&gt;=7</label>
+			<label kind="synchronisation" x="187" y="204">stop!</label>
+		</transition>
+		<transition id="id45">
+			<source ref="id41"/>
+			<target ref="id42"/>
+			<label kind="guard" x="280" y="289">u&gt;=6</label>
+		</transition>
+		<transition id="id46">
+			<source ref="id40"/>
+			<target ref="id41"/>
+			<label kind="guard" x="408" y="204">u&gt;=2</label>
+		</transition>
+		<transition id="id47">
+			<source ref="id39"/>
+			<target ref="id40"/>
+			<label kind="guard" x="348" y="76">u&gt;=0</label>
+			<label kind="synchronisation" x="385" y="56">Coordinates?</label>
+		</transition>
+	</template>
+	<template>
+		<name>SprayingPesticide</name>
+		<location id="id48" x="153" y="136">
+			<name x="94" y="128">Idle</name>
+		</location>
+		<location id="id49" x="309" y="22">
+			<name x="299" y="-12">Activation</name>
+		</location>
+		<location id="id50" x="479" y="141">
+			<name x="469" y="107">MovementTowardsPlant</name>
+			<label kind="invariant" x="501" y="136">u&gt;=2</label>
+		</location>
+		<location id="id51" x="433" y="323">
+			<name x="407" y="341">Spraying</name>
+			<label kind="invariant" x="459" y="314">u&gt;=6</label>
+		</location>
+		<location id="id52" x="199" y="319">
+			<name x="153" y="331">SprayingDone</name>
+		</location>
+		<init ref="id48"/>
+		<transition id="id53">
+			<source ref="id48"/>
+			<target ref="id49"/>
+			<label kind="synchronisation" x="170" y="51">diseased?</label>
+			<label kind="assignment" x="179" y="74">u:=0</label>
+		</transition>
+		<transition id="id54">
+			<source ref="id52"/>
+			<target ref="id48"/>
+			<label kind="guard" x="136" y="212">u&gt;=7</label>
+			<label kind="synchronisation" x="180" y="206">stop!</label>
+		</transition>
+		<transition id="id55">
+			<source ref="id51"/>
+			<target ref="id52"/>
+			<label kind="guard" x="289" y="297">u&gt;=6</label>
+		</transition>
+		<transition id="id56">
+			<source ref="id50"/>
+			<target ref="id51"/>
+			<label kind="guard" x="409" y="197">u&gt;=2</label>
+		</transition>
+		<transition id="id57">
+			<source ref="id49"/>
+			<target ref="id50"/>
+			<label kind="guard" x="340" y="68">u&gt;=0</label>
+			<label kind="synchronisation" x="385" y="56">Coordinates?</label>
+		</transition>
+	</template>
+	<template>
+		<name>NavigationController</name>
+		<location id="id58" x="-450" y="-93">
+			<name x="-552" y="-102">Idle</name>
+		</location>
+		<location id="id59" x="-229" y="-33">
+			<name x="-289" y="-17">ObstacleAvoider</name>
+		</location>
+		<location id="id60" x="-229" y="-178">
+			<name x="-280" y="-212">LaneFollower</name>
+		</location>
+		<location id="id61" x="-59" y="-178">
+			<name x="-51" y="-221">RightMovement</name>
+		</location>
+		<location id="id62" x="-59" y="-34">
+			<name x="-42" y="-43">LeftMovement</name>
+		</location>
+		<init ref="id58"/>
+		<transition id="id63">
+			<source ref="id59"/>
+			<target ref="id61"/>
+		</transition>
+		<transition id="id64">
+			<source ref="id60"/>
+			<target ref="id62"/>
+		</transition>
+		<transition id="id65">
+			<source ref="id62"/>
+			<target ref="id58"/>
+			<label kind="synchronisation" x="-280" y="42">Cleared!</label>
+			<nail x="-59" y="42"/>
+			<nail x="-450" y="34"/>
+		</transition>
+		<transition id="id66">
+			<source ref="id61"/>
+			<target ref="id58"/>
+			<label kind="synchronisation" x="-441" y="-297">Cleared!</label>
+			<nail x="-59" y="-280"/>
+			<nail x="-450" y="-280"/>
+		</transition>
+		<transition id="id67">
+			<source ref="id59"/>
+			<target ref="id62"/>
+		</transition>
+		<transition id="id68">
+			<source ref="id60"/>
+			<target ref="id61"/>
+		</transition>
+		<transition id="id69">
+			<source ref="id58"/>
+			<target ref="id60"/>
+			<label kind="synchronisation" x="-432" y="-152">Wrong_path?</label>
+		</transition>
+		<transition id="id70">
+			<source ref="id58"/>
+			<target ref="id59"/>
+			<label kind="synchronisation" x="-382" y="-93">obstacle_detected?</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+PF = PathFollower();
+PO = PlantObserver(); 
+W = Weeder();
+SF = SprayingFertilizer(); 
+SP = SprayingPesticide();
+NC = NavigationController();
+// List one or more processes to be composed into a system.
+system PF, PO, W, SF, SP, NC;
+</system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock
+</formula>
+			<comment>Check that the system is deadlock-free</comment>
+			<option key="--diagnostic" value="0"/>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+				<option key="--diagnostic" value="0"/>
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; NC.Idle</formula>
+			<comment>Check if the Navigationcontroller can reach Idle state</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (SP.Activation and SF.Activation)</formula>
+			<comment>Ensure SprayingPesticide and SprayingFertilizer are not activated simultaneously</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; W.Activation</formula>
+			<comment>Check if the Weeder can reach Activation state</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] (SF.SprayingDone imply SF.SprayingDone)</formula>
+			<comment>Ensure SprayingFertilizer remains in SprayingDone state</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; SF.Spraying</formula>
+			<comment>Check if the SprayingFertilizer can reach Spraying state</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (W.Activation and SF.Activation)</formula>
+			<comment>Ensure WeedRemoval and SprayingFertilizer are not activated simultaneously</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; SP.SprayingDone</formula>
+			<comment>Check if the SprayingPesticide can reach SprayingDone state</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (SF.Spraying and SP.Spraying)</formula>
+			<comment>Ensure SprayingFertilizer and SprayingPesticide are not spraying at the same time</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; PF.FollowingProperPath</formula>
+			<comment>Check if PathFollowing can reach FollowingProperPath state</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (NC.RightMovement and NC.LeftMovement)</formula>
+			<comment>Ensure that NavigationController is not present in the RightMovement and LeftMovement at a time</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:32:55 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment>Check that the system is deadlock-free</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:37:27 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not (SF.Spraying and W.WeedRemoval)</formula>
+			<comment>Ensure SprayingFertilizer spraying and Weeder WeedRemoval is not happining at the same time</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:39:48 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; NC.ObstacleAvoider</formula>
+			<comment>Check if the Navigationcontroller can reach ObstacleAvoider state</comment>
+			<result outcome="success" type="quality" timestamp="2024-06-14 03:41:28 +0200">
+			</result>
+		</query>
+	</queries>
+</nta>
